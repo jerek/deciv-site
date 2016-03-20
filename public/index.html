@@ -50,6 +50,22 @@
             text-shadow: 0 0 15px #000;
         }
 
+        h1 {
+            opacity: 0;
+        }
+
+        p span, footer {
+            display: none;
+        }
+
+        body.no-js h1 {
+            opacity: 1;
+        }
+
+        body.no-js p span, body.no-js footer {
+            display: block;
+        }
+
         @media screen and (max-width: 1000px) {
             body {font-size:24px}
             h1 {margin:115px auto}
@@ -86,19 +102,48 @@
             footer {font-size:9px;margin:94px 0 20px}
         }
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 </head>
-<body>
+<body class="no-js">
+<script>$(document.body).removeClass('no-js');</script>
 
 <h1><img src="images/logo.png">Decivilization</h1>
 
 <p>
-    This is the way the world ends<br>
-    This is the way the world ends<br>
-    This is the way the world ends<br>
-    Not with a bang but a whimper
+    <span>This is the way the world ends</span><br>
+    <span>This is the way the world ends</span><br>
+    <span>This is the way the world ends</span><br>
+    <span>Not with a bang but a whimper</span>
 </p>
 
 <footer>A role-playing game by River City Games, coming soon.</footer>
+<script>
+    (function() {
+        var $elements = [];
+        $('p span').each(function() {
+            $elements.push($(this));
+        });
+        $elements.push($('h1'));
+        $elements.push($('footer'));
+
+
+        for (var i = 0, $element; $element = $elements[i]; i++) {
+            setTimeout(
+                (function () {
+                    var duration = 2000 + (i * 200);
+                    if (this.prop('tagName') == 'H1') {
+                        this.animate({
+                            opacity: '1'
+                        }, duration + 2000);
+                    } else {
+                        this.fadeIn(duration);
+                    }
+                }).bind($element),
+                i == 5 ? 6000 : i * 1000
+            );
+        }
+    })();
+</script>
 
 </body>
 </html>
