@@ -1,23 +1,27 @@
-html {
-    height: 100%;
-}
-
 body {
     background: #5b4439 url(/images/big-rusty-background.jpg) center fixed;
     background-size: cover;
     color: #000;
-    font-family: "Rock Salt", cursive, sans-serif;
-    font-size: 32px;
-    height: 100%;
+    font-family: Roboto, "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 21px;
+    line-height: 1.4;
     margin: 0;
     text-align: center;
 }
 
-h1 {
+h2, h3, h4, h5, h6 {
+    font-family: "Rock Salt", cursive, sans-serif;
+}
+
+header {
+    margin: 100px auto 150px;
+    text-align: center;
+}
+
+header h1 {
     color: #b3b3aa;
-    font-family: "Montserrat", "Open Sans", Arial, sans-serif;
-    font-size: .3em;
-    margin: 150px auto;
+    font-size: 64px;
+    margin: 0 auto 20px;
     max-width: 80%;
     overflow: hidden;
     text-transform: uppercase;
@@ -25,69 +29,56 @@ h1 {
     width: 1200px;
 }
 
-h1 > img {
+header h1 > img {
     height: auto;
     width: 100%;
 }
 
+header h2 {
+    font-size: 48px;
+    margin: 0 0 -25px;
+}
+
 footer {
-    color: #d9d9d5;
+    color: #000;
     font-size: 14px;
-    font-family: monospace;
-    font-weight: bold;
-    margin: 250px 0 50px;
-    opacity: .75;
-    text-shadow: 0 0 15px #000;
-}
-
-h1 {
-    opacity: 0;
-}
-
-p span, footer {
-    display: none;
-}
-
-body.no-js h1 {
-    opacity: 1;
-}
-
-body.no-js p span, body.no-js footer {
-    display: block;
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin: 150px 0 50px;
 }
 
 @media screen and (max-width: 1000px) {
     body {font-size:24px}
-    h1 {margin:115px auto}
+    header {margin:115px auto}
     footer {margin:185px 0 38px}
 }
 
 @media screen and (max-width: 699px) {
     body {font-size:18px}
-    h1 {margin:85px auto}
+    header {margin:85px auto}
     footer {margin:140px 0 28px}
 }
 
 @media screen and (max-width: 519px) {
     body {font-size:15px}
-    h1 {margin:70px auto}
+    header {margin:70px auto}
     footer {font-size:12px;margin:117px 0 23px}
 }
 
 @media screen and (max-width: 419px) {
     body {font-size:14px}
-    h1 {margin:66px auto}
+    header {margin:66px auto}
     footer {font-size:11px;margin:109px 0 22px}
 }
 
 @media screen and (max-width: 399px) {
     body {font-size:13px}
-    h1 {margin:61px auto}
+    header {margin:61px auto}
     footer {font-size:10px;margin:102px 0 20px}
 }
 
 @media screen and (max-width: 359px) {
     body {font-size:12px}
-    h1 {margin:56px auto}
+    header {margin:56px auto}
     footer {font-size:9px;margin:94px 0 20px}
 }

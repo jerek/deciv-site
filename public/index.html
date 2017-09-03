@@ -1,9 +1,9 @@
 <!doctype html>
 <html>
 <head>
-    <title>Decivilization</title>
+    <title>Decivilization: A Post-Apocalyptic RPG Podcast</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Rock+Salt" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="/css/base.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
@@ -11,7 +11,10 @@
 <body class="no-js">
 <script>$(document.body).removeClass('no-js');</script>
 
-<h1><img src="images/logo.png">Decivilization</h1>
+<header>
+    <h1><img src="images/logo.png">Decivilization</h1>
+    <h2>A Post-Apocalyptic RPG Podcast</h2>
+</header>
 
 <p>
     <span>This is the way the world ends</span><br>
@@ -21,33 +24,6 @@
 </p>
 
 <footer>A role-playing game by River City Games, coming soon.</footer>
-<script>
-    (function() {
-        var $elements = [];
-        $('p span').each(function() {
-            $elements.push($(this));
-        });
-        $elements.push($('h1'));
-        $elements.push($('footer'));
-
-
-        for (var i = 0, $element; $element = $elements[i]; i++) {
-            setTimeout(
-                (function () {
-                    var duration = 2000 + (i * 200);
-                    if (this.prop('tagName') == 'H1') {
-                        this.animate({
-                            opacity: '1'
-                        }, duration + 2000);
-                    } else {
-                        this.fadeIn(duration);
-                    }
-                }).bind($element),
-                i == 5 ? 6000 : i * 1000
-            );
-        }
-    })();
-</script>
 
 </body>
 </html>
