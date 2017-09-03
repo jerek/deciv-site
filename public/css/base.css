@@ -31,6 +31,15 @@ button:hover, a[href].btn:hover {
     background: #bf3900;
 }
 
+button[disabled], .btn[disabled] {
+    cursor: default;
+    opacity: .5;
+}
+
+button[disabled]:hover, a[href][disabled].btn:hover {
+    background: #723c24;
+}
+
 header {
     margin: 100px auto 150px;
     text-align: center;
@@ -84,6 +93,10 @@ article:last-child {
 article > h3 {
     font-size: 32px;
     margin: 0 0 32px;
+}
+
+article .play audio {
+    width: 100%;
 }
 
 article .download .publish-date {
