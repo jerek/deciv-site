@@ -1,10 +1,13 @@
-app:
-  build: "."
-  container_name: "deciv"
-  volumes:
-    - ".:/src"
-    - "./public:/var/www/html"
-  environment:
-    APP_ENV: "prod"
-  ports:
-    - "1081:80"
+version: '2'
+services:
+  app:
+    build: "."
+    container_name: "deciv"
+    image: "deciv"
+    volumes:
+      - ".:/src"
+      - "./public:/var/www/html"
+    environment:
+      APP_ENV: "prod"
+    ports:
+      - "80:80"
