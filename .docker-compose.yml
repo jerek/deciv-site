@@ -1,0 +1,17 @@
+app:
+  build: "."
+  container_name: "deciv-site"
+  links:
+    - "memcached:memcached"
+  volumes:
+    - ".:/src"
+    - "./public:/var/www/html"
+  environment:
+    APP_ENV: "prod"
+  ports:
+    - "1081:80"
+memcached:
+  container_name: "memcached"
+  image: "memcached:1.5.1"
+  ports:
+    - "11212:11211"
