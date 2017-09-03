@@ -13,6 +13,24 @@ h2, h3, h4, h5, h6 {
     font-family: "Rock Salt", cursive, sans-serif;
 }
 
+a {
+    /* color: #d94100; */
+    color: #bf3900;
+}
+
+button, .btn {
+    background: #723c24;
+    border-radius: 4px;
+    color: #fff;
+    display: inline-block;
+    padding: 8px 12px;
+    text-decoration: none;
+}
+
+button:hover, a[href].btn:hover {
+    background: #bf3900;
+}
+
 header {
     margin: 100px auto 150px;
     text-align: center;
@@ -37,6 +55,45 @@ header h1 > img {
 header h2 {
     font-size: 48px;
     margin: 0 0 -25px;
+}
+
+main {
+    margin: 0 auto;
+    max-width: 80%;
+    text-align: left;
+    width: 800px;
+}
+
+article {
+    background: rgba(255, 255, 255, .85) url(/images/paper.jpg);
+    background-size: 100% auto;
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin: 20px 0;
+    padding: 20px;
+}
+
+article:first-child {
+    margin-top: 0;
+}
+
+article:last-child {
+    margin-bottom: 0;
+}
+
+article > h3 {
+    font-size: 32px;
+    margin: 0 0 32px;
+}
+
+article .download .publish-date {
+    font-size: 16px;
+    margin: 0 0 0 20px;
+    opacity: .5;
+}
+
+article > :last-child {
+    margin-bottom: 0;
 }
 
 footer {
