@@ -5,8 +5,7 @@ services:
     container_name: "deciv"
     image: "deciv"
     volumes:
-      - ".:/src"
-      - "./public:/var/www/html"
+      - ".:/var/www/deciv.com"
     environment:
       APP_ENV: "prod"
     ports:
