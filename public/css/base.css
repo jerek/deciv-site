@@ -119,6 +119,12 @@ header h2 {
     header h2 {font-size:13px}
 }
 
+nav {margin:0 0 50px}
+nav ul {list-style:none; vertical-align:center}
+nav ul li {display:inline-block; margin:0 15px}
+nav ul li a {color:#fff}
+nav ul li a .fa {margin-right:7px}
+
 main {
     margin: 0 auto;
     max-width: 80%;
