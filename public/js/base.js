@@ -1,4 +1,4 @@
-function displayPlayControls(episodePath) {
+function displayPlayControls(episodeUrl) {
     // If we already revealed the play controls don't do it again
     if (this.getAttribute('disabled') === 'disabled') {
         return;
@@ -15,7 +15,7 @@ function displayPlayControls(episodePath) {
     var audio = document.createElement('audio');
     audio.innerHTML = 'Your browser does not support the audio element.';
     audio.controls = 'controls';
-    audio.src = '/downloads/' + episodePath;
+    audio.src = episodeUrl;
     audio.type = 'audio/mpeg';
     $playDiv.append(audio);
 

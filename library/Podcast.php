@@ -81,31 +81,39 @@ class Podcast {
             $filePath = ROOT_DIR . self::EPISODES_DIR . '/' . $file;
 
             // not . or .., ends in .mp3
-            if(is_file($filePath) && strrchr($filePath, '.') == ".mp3") {
+            if(is_file($filePath) && strrchr($filePath, '.') === '.mp3') {
                 // Initialise file details to sensible defaults
                 $episode = [
                     'title' => $file,
                     'url' => self::EPISODES_HOST . self::EPISODES_PATH . '/' . $file,
+                    'relativeUrl' => self::EPISODES_PATH . '/' . $file,
                     'author' => self::DEFAULT_AUTHOR,
                     'duration' => '',
                     'description' => self::DEFAULT_DESCRIPTION,
                     'date' => date(DateTime::RFC2822, filemtime($filePath)),
+                    'timestamp' => filemtime($filePath),
                     'size' => filesize($filePath),
                 ];
 
                 // Read file metadata from the ID3 tags
-                $id3_info = self::$id3Engine->analyze($filePath);
-                getid3_lib::CopyTagsToComments($id3_info);
+                $id3Info = self::$id3Engine->analyze($filePath);
+                getid3_lib::CopyTagsToComments($id3Info);
 
-                if (!empty($id3_info["comments_html"]["title"][0])) {
-                    $episode['title'] = $id3_info["comments_html"]["title"][0];
+                if (!empty($id3Info['comments']['title'][0])) {
+                    $episode['title'] = $id3Info['comments']['title'][0];
                 }
-                if (!empty($id3_info["comments_html"]["artist"][0])) {
-                    $episode['author'] = $id3_info["comments_html"]["artist"][0];
+                if (!empty($id3Info['comments']['artist'][0])) {
+                    $episode['author'] = $id3Info['comments']['artist'][0];
                 }
-                if (!empty($id3_info["playtime_string"])) {
-                    $episode['duration'] = $id3_info["playtime_string"];
+                if (!empty($id3Info['playtime_string'])) {
+                    $episode['duration'] = $id3Info['playtime_string'];
                 }
+                if (!empty($id3Info['comments']['comment'][0])) {
+                    $episode['description'] = $id3Info['comments']['comment'][0];
+                }
+                $episode['htmlDescription'] = htmlentities($episode['description']);
+                $episode['htmlDescription'] = '<p>' . implode('</p><p>', explode("\n\n", $episode['htmlDescription'])) . '</p>';
+                $episode['htmlDescription'] = str_replace("\n", '<br>', $episode['htmlDescription']);
 
                 $episodes[] = $episode;
             }

@@ -1,3 +1,10 @@
+<?php
+
+require_once '../library/Podcast.php';
+
+$episodes = Podcast::getEpisodes();
+
+?>
 <!doctype html>
 <html>
 <head>
@@ -61,18 +68,18 @@
 </nav>
 
 <main>
+    <?php foreach ($episodes as $episode): ?>
     <article>
-        <h3>Episode 1: A Memorable Evening</h3>
-        <p>The Decivilization podcast begins, introducing listeners to a post-apocalyptic world full of warring city-states, raiders, and strange creatures, all fighting to survive.</p>
-        <p>Episode 1 introduces characters destined to have a hand in the tumultuous fate of Los Rios, informally called River City, the dominant central city-state of the continent of Maecria that controls their town.</p>
-        <p>Our tale begins with a mysterious death, a stranger in a box, and a very memorable evening...</p>
+        <h3><?=$episode['title']?></h3>
+        <div class="description"><?=$episode['htmlDescription']?></div>
         <p class="play"></p>
         <div class="download">
-            <a href="javascript:;" class="btn" onclick="displayPlayControls.call(this, 'episodes/decivilization-s01e01-a-memorable-evening.mp3')"><i class="fa fa-play"></i>&nbsp; Play</a>
-            <a href="/downloads/episodes/decivilization-s01e01-a-memorable-evening.mp3" class="btn" download><i class="fa fa-download"></i>&nbsp; Download</a>
-            <span class="publish-date">September 3rd, 2017</span>
+            <a href="javascript:;" class="btn" onclick="displayPlayControls.call(this, '<?=$episode['relativeUrl']?>')"><i class="fa fa-play"></i>&nbsp; Play</a>
+            <a href="<?=$episode['relativeUrl']?>" class="btn" download><i class="fa fa-download"></i>&nbsp; Download</a>
+            <span class="publish-date"><?=date('F jS, Y', $episode['timestamp'])?></span>
         </div>
     </article>
+    <?php endforeach; ?>
 </main>
 
 <footer>A role-playing game by River City Games, coming soon.</footer>
