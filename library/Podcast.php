@@ -12,8 +12,8 @@ class Podcast {
 
     // File locations
     const EPISODES_PATH = '/downloads/episodes';
-    const EPISODES_DIR = ROOT_DIR . '/public/downloads/episodes';
-    const EPISODES_URL = 'http://deciv.com' . self::EPISODES_PATH;
+    const EPISODES_DIR  = '/public/downloads/episodes';
+    const EPISODES_HOST = 'http://deciv.com';
 
     // Episode info defaults
     const DEFAULT_AUTHOR = 'Decivilization.com';
@@ -74,18 +74,18 @@ class Podcast {
         }
 
         $episodes = [];
-        $directory = opendir(self::EPISODES_DIR) or die($php_errormsg);
+        $directory = opendir(ROOT_DIR . self::EPISODES_DIR) or die($php_errormsg);
 
         // Step through file directory
         while (($file = readdir($directory)) !== false) {
-            $filePath = self::EPISODES_DIR . '/' . $file;
+            $filePath = ROOT_DIR . self::EPISODES_DIR . '/' . $file;
 
             // not . or .., ends in .mp3
             if(is_file($filePath) && strrchr($filePath, '.') == ".mp3") {
                 // Initialise file details to sensible defaults
                 $episode = [
                     'title' => $file,
-                    'url' => self::EPISODES_URL . '/' . $file,
+                    'url' => self::EPISODES_HOST . self::EPISODES_PATH . '/' . $file,
                     'author' => self::DEFAULT_AUTHOR,
                     'duration' => '',
                     'description' => self::DEFAULT_DESCRIPTION,
