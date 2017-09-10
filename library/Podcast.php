@@ -45,7 +45,7 @@ class Podcast {
         'link' => 'http://deciv.com/', // "More info" link for your feed
         'description' => 'A post-apocalyptic RPG podcast in a world full of warring city-states, raiders, and strange creatures, all fighting to survive.',
         'copyright' => 'All content &#0169; River City Games',
-        'ttl' => 60 * 60 * 24, // How often feed readers check for new material (in seconds) -- mostly ignored by readers
+        'ttl' => 86400, // 60 * 60 * 24 - How often feed readers check for new material (in seconds) -- mostly ignored by readers
         'lang' => 'en-us',
 
         // iTunes-specific
