@@ -5,7 +5,7 @@ RUN apt update
 RUN apt install -y git libz-dev mlocate netcat nmap tree vim libxml2-dev libcurl4-gnutls-dev
 
 # Install PHP extensions
-RUN docker-php-ext-install pcntl
+RUN docker-php-ext-install pcntl pdo_mysql
 
 # Set up aliases
 RUN echo "alias ll='ls -al --color'" >>/root/.bashrc
