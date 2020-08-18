@@ -4,3 +4,5 @@ RewriteEngine On
 
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.*)$ $1.php [L,NS]
+
+RewriteRule ^(.*).(mp3)$ /download.php?file=$1.$2 [R,L]

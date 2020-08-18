@@ -5,19 +5,30 @@ define('ROOT_DIR', dirname(__DIR__));
 
 require_once ROOT_DIR . '/vendor/getID3-master/getid3/getid3.php';
 
+require_once ROOT_DIR . '/library/DB.php';
+
 class Podcast {
     // ********************* //
     // ***** CONSTANTS ***** //
     // ********************* //
 
-    // File locations
-    const EPISODES_PATH = '/downloads/episodes';
-    const EPISODES_DIR  = '/public/downloads/episodes';
-    const EPISODES_HOST = 'http://deciv.com';
+    /** @var string[] A simple list of known bot names found in user agents. */
+    private const BOTS = [
+        'Teoma', 'alexa', 'froogle', 'Gigabot', 'inktomi', 'looksmart', 'URL_Spider_SQL', 'Firefly',
+        'NationalDirectory', 'Ask Jeeves', 'TECNOSEEK', 'InfoSeek', 'WebFindBot', 'girafabot', 'crawler',
+        'www.galaxy.com', 'Googlebot', 'Scooter', 'Slurp', 'msnbot', 'appie', 'FAST', 'WebBug', 'Spade', 'ZyBorg',
+        'rabaz', 'Baiduspider', 'Feedfetcher-Google', 'TechnoratiSnoop', 'Rankivabot', 'Mediapartners-Google',
+        'Sogou web spider', 'WebAlta Crawler', 'TweetmemeBot', 'Butterfly', 'Twitturls', 'Me.dium', 'Twiceler',
+    ];
 
     // Episode info defaults
-    const DEFAULT_AUTHOR = 'Decivilization.com';
-    const DEFAULT_DESCRIPTION = 'A post-apocalyptic RPG podcast in a world full of warring city-states, raiders, and strange creatures, all fighting to survive.';
+    private const DEFAULT_AUTHOR = 'Decivilization.com';
+    private const DEFAULT_DESCRIPTION = 'A post-apocalyptic RPG podcast in a world full of warring city-states, raiders, and strange creatures, all fighting to survive.';
+
+    // File locations
+    private const EPISODES_PATH = '/downloads/episodes';
+    private const EPISODES_HOST = 'http://deciv.com';
+    private const PUBLIC_DIR = ROOT_DIR . '/public';
 
     // ********************** //
     // ***** PROPERTIES ***** //
@@ -68,17 +79,21 @@ class Podcast {
     // ***** FUNCTIONS ***** //
     // ********************* //
 
+    // ====== //
+    // PUBLIC //
+    // ====== //
+
     public static function getEpisodes() {
         if (self::$id3Engine === null) {
             self::$id3Engine = new getID3();
         }
 
         $episodes = [];
-        $directory = opendir(ROOT_DIR . self::EPISODES_DIR) or die($php_errormsg);
+        $directory = opendir(self::PUBLIC_DIR . self::EPISODES_PATH) or die($php_errormsg);
 
         // Step through file directory
         while (($file = readdir($directory)) !== false) {
-            $filePath = ROOT_DIR . self::EPISODES_DIR . '/' . $file;
+            $filePath = self::PUBLIC_DIR . self::EPISODES_PATH . '/' . $file;
 
             // not . or .., ends in .mp3
             if(is_file($filePath) && strrchr($filePath, '.') === '.mp3') {
@@ -122,6 +137,109 @@ class Podcast {
         closedir($directory);
 
         return $episodes;
+    }
+
+    /**
+     * Download the given episode.
+     *
+     * @param string  $file  A file path starting from the public root, with no leading slash.
+     */
+    public static function downloadEpisode(string $file): void {
+        // If the user tried to request something outside the episodes dir, show a 404 message.
+        $realPath = realpath(self::PUBLIC_DIR . '/' . $file);
+        if (dirname($realPath) !== self::PUBLIC_DIR . self::EPISODES_PATH) {
+            header("{$_SERVER["SERVER_PROTOCOL"]} 404 Not Found");
+            exit;
+        }
+
+        // Log that we got a download. 🎊
+        Podcast::logDownload($file);
+
+        // Send the file to the user.
+        header('Cache-Control: public');
+        header('Content-Description: File Transfer');
+        header('Content-Disposition: attachment; filename=' . basename($file));
+        header('Content-Length: ' . filesize($realPath));
+        header('Content-Type: application/force-download');
+        header('Content-Transfer-Encoding: binary');
+        ob_clean();
+        ob_end_flush();
+        readfile($realPath);
+    }
+
+    // ======= //
+    // PRIVATE //
+    // ======= //
+
+    /**
+     * If the request appears to be from a bot, return its bot name.
+     *
+     * @return string|null
+     */
+    private static function getBotName(): ?string {
+        foreach (self::BOTS as $bot) {
+            if (strpos($_SERVER['HTTP_USER_AGENT'], $bot) !== false) {
+                return $bot;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Log in the database that the given file is being downloaded.
+     *
+     * @param string  $file
+     */
+    private static function logDownload(string $file): void {
+        // Determine the user's IP.
+        $client  = @$_SERVER['HTTP_CLIENT_IP'];
+        $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+        $remote  = $_SERVER['REMOTE_ADDR'];
+        if (filter_var($client, FILTER_VALIDATE_IP)) {
+            $ip = $client;
+        } elseif (filter_var($forward, FILTER_VALIDATE_IP)) {
+            $ip = $forward;
+        } else {
+            $ip = $remote;
+        }
+
+        $info = null;
+        if ($ip) {
+            // If we have an IP, try to get some basic info on it.
+            $curlHandle = curl_init();
+            curl_setopt_array($curlHandle, [
+                CURLOPT_URL => "https://ipinfo.io/{$ip}",
+                CURLOPT_TIMEOUT => 5,
+                CURLOPT_CONNECTTIMEOUT => 5,
+                CURLOPT_RETURNTRANSFER => true,
+            ]);
+            $response = curl_exec($curlHandle);
+            $statusCode = curl_getinfo($curlHandle, CURLINFO_HTTP_CODE);
+            $errorMessage = curl_error($curlHandle);
+            curl_close($curlHandle);
+            if ($statusCode !== 200 || $errorMessage) {
+                error_log("[jdWarning] IP info curl failed. Status: [{$statusCode}] Message: [{$errorMessage}]");
+            } else {
+                $responseData = json_decode($response);
+                if (json_last_error() === JSON_ERROR_NONE && $responseData) {
+                    if ($botName = self::getBotName()) {
+                        $responseData['botName'] = $botName;
+                    }
+                    $info = json_encode($responseData);
+                }
+            }
+        }
+
+        $sql = 'INSERT INTO accessLog (file, ip, time, info) VALUES (:file, :ip, :time, :info)';
+        $params = [
+            'file' => $file,
+            'ip' => $ip,
+            'time' => time(),
+            'info' => $info,
+        ];
+
+        DB::queryExec($sql, $params);
     }
 }
 
