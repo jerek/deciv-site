@@ -124,14 +124,16 @@ class DB extends PDO {
             $dsn = 'mysql:host=' . getenv('DECIV_DB_HOST') . ';dbname=' . self::DB_NAME;
             $user = getenv('DECIV_DB_USERNAME');
             $pass = getenv('DECIV_DB_PASSWORD');
-            self::$pdo = new self($dsn, $user, $pass);
+            $options = [
+                // Default to returning associative arrays.
+                self::ATTR_DEFAULT_FETCH_MODE => self::FETCH_ASSOC,
+                // Always use UTF-8 with support for multi-byte characters.
+                self::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
+                // Set the DB driver to use native mode, so fields are in appropriate PHP types.
+                self::ATTR_EMULATE_PREPARES => false,
+            ];
 
-            // Set the DB driver to use native mode, so fields are in appropriate PHP types.
-            self::$pdo->setAttribute(self::ATTR_EMULATE_PREPARES, false);
-            self::$pdo->setAttribute(self::ATTR_DEFAULT_FETCH_MODE, self::FETCH_ASSOC);
-
-            // Always use UTF-8 with support for multi-byte characters.
-            self::$pdo->query('SET NAMES utf8mb4');
+            self::$pdo = new self($dsn, $user, $pass, $options);
         }
 
         return self::$pdo;
