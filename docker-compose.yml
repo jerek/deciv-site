@@ -1,25 +1,25 @@
-version: '2'
+version: "2"
 services:
   app:
-    build: "."
-    container_name: "deciv"
-    image: "deciv"
+    build: .
+    container_name: deciv
+    image: deciv
     volumes:
-      - ".:/var/www/deciv.com"
+      - .:/var/www/deciv.com
     environment:
-      APP_ENV: "prod"
-      DECIV_DB_HOST: "mysql"
-      DECIV_DB_USERNAME: "admin"
-      DECIV_DB_PASSWORD: "password"
+      APP_ENV: prod
+      DECIV_DB_HOST: mysql
+      DECIV_DB_USERNAME: admin
+      DECIV_DB_PASSWORD: password
     ports:
-      - "80:80"
+      - 80:80
 
   mysql:
     image: mariadb:10.1
     expose:
-      - "3306"
+      - 3306
     ports:
-      - "3306:3306"
+      - 3306:3306
     environment:
       MYSQL_DATABASE: decivSite
       MYSQL_USER: admin
