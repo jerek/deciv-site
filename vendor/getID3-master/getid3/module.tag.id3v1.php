@@ -66,13 +66,15 @@ class getid3_id3v1 extends getid3_handler
 			$ID3v1encoding = 'ISO-8859-1';
 			foreach ($ParsedID3v1['comments'] as $tag_key => $valuearray) {
 				foreach ($valuearray as $key => $value) {
-					if (preg_match('#^[\\x00-\\x40\\xA8\\B8\\x80-\\xFF]+$#', $value)) {
+					if (preg_match('#^[\\x00-\\x40\\x80-\\xFF]+$#', $value) && !ctype_digit((string) $value)) { // check for strings with only characters above chr(128) and punctuation/numbers, but not just numeric strings (e.g. track numbers or years)
 						foreach (array('Windows-1251', 'KOI8-R') as $id3v1_bad_encoding) {
 							if (function_exists('mb_convert_encoding') && @mb_convert_encoding($value, $id3v1_bad_encoding, $id3v1_bad_encoding) === $value) {
 								$ID3v1encoding = $id3v1_bad_encoding;
+								$this->warning('ID3v1 detected as '.$id3v1_bad_encoding.' text encoding in '.$tag_key);
 								break 3;
 							} elseif (function_exists('iconv') && @iconv($id3v1_bad_encoding, $id3v1_bad_encoding, $value) === $value) {
 								$ID3v1encoding = $id3v1_bad_encoding;
+								$this->warning('ID3v1 detected as '.$id3v1_bad_encoding.' text encoding in '.$tag_key);
 								break 3;
 							}
 						}
