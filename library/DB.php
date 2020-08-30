@@ -113,15 +113,21 @@ class DB extends PDO {
     // ======= //
 
     /**
-     * Fetch the PDO connection object.  Since we use the same connection for all DBs, we don't need a complex
-     * maintenance infrastructure for this.
+     * Fetch the PDO connection object, instantiating it as needed.
      *
      * @return self
      */
     private static function getConnection(): self {
         if (self::$pdo === null) {
             // Connect to the database.
-            $dsn = 'mysql:host=' . getenv('DECIV_DB_HOST') . ';dbname=' . self::DB_NAME;
+            $dsn = [];
+            $dsn[] = 'host=' . getenv('DECIV_DB_HOST');
+            if ($port = getenv('DECIV_DB_PORT')) {
+                $dsn[] = 'port=' . $port;
+            }
+            $dsn[] = 'dbname=' . self::DB_NAME;
+            $dsn = 'mysql:' . implode(';', $dsn);
+
             $user = getenv('DECIV_DB_USERNAME');
             $pass = getenv('DECIV_DB_PASSWORD');
             $options = [

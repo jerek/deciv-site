@@ -9,6 +9,7 @@ services:
     environment:
       APP_ENV: dev
       DECIV_DB_HOST: mysql
+      DECIV_DB_PORT: 3306
       DECIV_DB_USERNAME: admin
       DECIV_DB_PASSWORD: password
     ports:
