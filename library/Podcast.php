@@ -136,7 +136,11 @@ class Podcast {
 
         closedir($directory);
 
-        return array_reverse($episodes);
+        usort($episodes, function (array $a, array $b): int {
+            return strcmp($a['relativeUrl'], $b['relativeUrl']);
+        });
+
+        return $episodes;
     }
 
     /**
