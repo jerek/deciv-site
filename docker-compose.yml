@@ -7,7 +7,7 @@ services:
     volumes:
       - .:/var/www/deciv.com
     environment:
-      APP_ENV: prod
+      APP_ENV: dev
       DECIV_DB_HOST: mysql
       DECIV_DB_USERNAME: admin
       DECIV_DB_PASSWORD: password
