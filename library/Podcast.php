@@ -136,7 +136,7 @@ class Podcast {
 
         closedir($directory);
 
-        return $episodes;
+        return array_reverse($episodes);
     }
 
     /**
