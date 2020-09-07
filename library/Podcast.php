@@ -157,7 +157,17 @@ class Podcast {
         }
 
         // Log that we got a download. 🎊
-        Podcast::logDownload($file);
+        try {
+            Podcast::logDownload($file);
+        } catch (Error $exception) {
+            error_log("[jdError] Caught download logging error: {$exception->getMessage()}");
+
+            try {
+                Podcast::logDownload($file, false);
+            } catch (Error $exception) {
+                error_log("[jdError] Caught SECOND download logging error: {$exception->getMessage()}");
+            }
+        }
 
         // Send the file to the user.
         header('Cache-Control: public');
@@ -194,22 +204,22 @@ class Podcast {
      * Log in the database that the given file is being downloaded.
      *
      * @param string  $file
+     * @param bool    $fetchIpInfo
      */
-    private static function logDownload(string $file): void {
+    private static function logDownload(string $file, bool $fetchIpInfo = true): void {
         // Determine the user's IP.
         $client  = @$_SERVER['HTTP_CLIENT_IP'];
         $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
-        $remote  = $_SERVER['REMOTE_ADDR'];
         if (filter_var($client, FILTER_VALIDATE_IP)) {
             $ip = $client;
         } elseif (filter_var($forward, FILTER_VALIDATE_IP)) {
             $ip = $forward;
         } else {
-            $ip = $remote;
+            $ip = $_SERVER['REMOTE_ADDR'] ?: '';
         }
 
         $info = null;
-        if ($ip) {
+        if ($ip && $fetchIpInfo) {
             // If we have an IP, try to get some basic info on it.
             $curlHandle = curl_init();
             curl_setopt_array($curlHandle, [
