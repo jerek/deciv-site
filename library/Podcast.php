@@ -159,12 +159,12 @@ class Podcast {
         // Log that we got a download. 🎊
         try {
             Podcast::logDownload($file);
-        } catch (Error $exception) {
+        } catch (Exception $exception) {
             error_log("[jdError] Caught download logging error: {$exception->getMessage()}");
 
             try {
                 Podcast::logDownload($file, false);
-            } catch (Error $exception) {
+            } catch (Exception $exception) {
                 error_log("[jdError] Caught SECOND download logging error: {$exception->getMessage()}");
             }
         }
